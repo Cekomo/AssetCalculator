@@ -1,14 +1,9 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: rgb(50, 50, 50);
-}
+
 
 #nav-container {
     display: flex;
     align-items: center;
-    height: 100vh;
+    height: 96vh;
     width: 104px;
     border-radius: 12px;
 }
@@ -16,9 +11,9 @@ body {
 #navbar {
     background-color: rgb(28, 32, 32);
     margin-left: 12px;
-    height: 98vh;
+    height: 96vh;
     width: 72px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
 }
 
 .nav-elements {
@@ -49,7 +44,7 @@ body {
     display: block;
     margin-top: 24px;    
     font-size: 24px;
-    margin-left: 2px; /* quick fix for center alignment */
+    margin-left: 3px; /* quick fix for center alignment */
 
     transition: transform 0.3s ease;    
 }

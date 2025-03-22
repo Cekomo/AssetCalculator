@@ -7,9 +7,6 @@ const Navbar = () => {
     return (
         <nav id='nav-container'>
             <div id="navbar">
-                <div id="nav-logo">
-                    {/* <Brand /> */}
-                </div>
                 <div className='nav-elements'>
                     <div> 
                         <li id='nav-icon'>
@@ -45,7 +42,7 @@ const Navbar = () => {
                 </div>
             </div>
         </nav>
-    )
-}
+    );
+};
 
 export default Navbar;
