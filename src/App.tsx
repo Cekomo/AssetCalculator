@@ -1,29 +1,40 @@
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import './App.css'
-import { BrowserRouter } from 'react-router-dom'
 import Navbar from './navbar/Navbar'
+import Home from "./pages/Home";
+import Wealth from "./pages/Wealth";
+import Market from "./pages/Market";
+import Weather from "./pages/Weather";
+import About from "./pages/About";
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Layout>
-          <Navbar />
-          
-        </Layout>
-      </BrowserRouter>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="wealth" element={<Wealth />} />
+          <Route path="market" element={<Market />} />
+          <Route path="weather" element={<Weather />} />
+          <Route path="about" element={<About />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
 
 
-const Layout = ( {children}: { children: React.ReactNode} ) => {
+const Layout = () => {
   return (
     <div id="layout">
       <div id="body">
-        <main>{children}</main>
+        <Navbar />
+        <div id="content">
+          <Outlet /> {/* Will take the rest of the space */}
+        </div>
       </div>
     </div>
   );
-}
+};

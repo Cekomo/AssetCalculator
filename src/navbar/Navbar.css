@@ -4,22 +4,20 @@
     display: flex;
     align-items: center;
     height: 96vh;
-    width: 104px;
-    border-radius: 12px;
+    width: 90px; /* 104px initally*/
 }
 
 #navbar {
+    display: flex;
     background-color: rgb(28, 32, 32);
     margin-left: 12px;
     height: 96vh;
     width: 72px;
-    /* border-radius: 10px; */
+    justify-content: center;
 }
 
 .nav-elements {
-    display: flex;
     list-style: none;
-    justify-content: center;
 }
 
 #nav-icon img {
@@ -31,7 +29,7 @@
 }
 
 #nav-icon img:hover {
-    animation: glow 1.5s ease-in-out infinite;
+    animation: glow-icon 1.5s ease-in-out infinite;
     transform: scale(1.05);
 }
 
@@ -45,19 +43,20 @@
     margin-top: 24px;    
     font-size: 24px;
     margin-left: 3px; /* quick fix for center alignment */
-
     transition: transform 0.3s ease;    
 }
 
 .nav-item svg {
     color: rgb(204, 206, 200);
+    
 }
 
 .nav-item:hover {
     transform: translateY(-6px);
+    animation: glow-item 2s ease-in-out;
 }
 
-@keyframes glow {
+@keyframes glow-icon {
     0% {
       filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
     }
@@ -66,5 +65,17 @@
     }
     100% {
       filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+    }
+}
+
+@keyframes glow-item {
+    0% {
+      filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
+    }
+    50% {
+      filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+    }
+    100% {
+      filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
     }
 }
