@@ -1,5 +1,6 @@
 #market-body {
     display: flex;
+    flex-direction: column;
     grid-template-columns: repeat(5, 1fr);
     /* background-color: rgb(209, 166, 102); */
     width: 100%;
@@ -26,5 +27,33 @@
 }
 
 .title:last-child {
+    border-right: none;
+}
+
+/* #records {
+    list-style-type: none;
+    text-align: center;
+} */
+
+#records {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+}
+
+#records li {
+    display: contents;
+}
+
+
+.field {
+    padding: 8px;
+    color: #cccec8;
+    line-height: 2;
+    border-bottom: 1px solid #2b2a2a;
+}
+
+
+.field:last-child {
     border-right: none;
 }
