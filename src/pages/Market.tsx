@@ -1,35 +1,15 @@
 import './Market.css';
 import { useState } from "react";
 import ParseMarketInfo from "../utility/JsonParser";
+import { formatDate } from "../utility/FormatModifier";
 
 export const Market = () => {
-    // const [marketInfo, setMarketInfo] = useState([
-    //     {
-    //         "code": "ALTIN",
-    //         "alis": "3704.730",
-    //         "satis": "3729.560",
-    //         "dusuk": 3750.0399999999999636202119290828704833984375,
-    //         "yuksek": 3766.90999999999985448084771633148193359375,
-    //         "kapanis": 3738.34000000000014551915228366851806640625,
-    //         "tarih": "25-03-2025 00:09:22"
-    //     },
-    //     {
-    //         "code": "EURTRY",
-    //         "alis": "40.8990",
-    //         "satis": "41.2210",
-    //         "dusuk": 41.3220000000000027284841053187847137451171875,
-    //         "yuksek": 41.53099999999999880628820392303168773651123046875,
-    //         "kapanis": 41.14999999999999857891452847979962825775146484375,
-    //         "tarih": "25-03-2025 00:09:24"
-    //     }
-    // ]);
 
     const [marketInfo, setMarketInfo] = useState<MarketInfo[]>([]);
-    // const [marketInfo, setMarketInfo] = useState<any[]>([]);
+    const filterCodes = ["USDTRY", "EURTRY", "ALTIN", "ONS", "EURUSD", "AYAR22", "KULCEALTIN", "ATA_YENI", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA5_YENI", "GREMESE_YENI", "CHFTRY", "GUMUSTRY", "AYAR14"];
 
     return (
         <div id="market-body">
-            {/* <ParseMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} /> */}
             <div id="header">
                 <a className="title">Birim</a>
                 <a className="title">Alış</a>
@@ -38,13 +18,14 @@ export const Market = () => {
                 <a className="title">Tarih</a>
             </div>
             <div id="records">
+                <ParseMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodes}/>
                 {marketInfo.map((item) => (
                     <li key={item.code}>
                         <a className='field'>{item.code}</a>
-                        <a className='field'>{item.alis}</a>
-                        <a className='field'>{item.satis}</a>
-                        <a className='field'>{item.yuksek - item.dusuk}</a>
-                        <a className='field'>{item.tarih}</a>
+                        <a className='field'>{Math.trunc(item.alis*1000)/1000}</a>
+                        <a className='field'>{Math.trunc(item.satis*1000)/1000}</a>
+                        <a className='field'>{Math.trunc((item.yuksek-item.dusuk)*10000)/10000}</a>
+                        <a className='field'>{formatDate(item.tarih)}</a>
                     </li>
                     
                 ))}
