@@ -3,17 +3,29 @@ import axios from "axios";
 
 const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
-        axios.get('http://localhost:5000/market')
-            .then(response => {
-                const filteredData = response.data.filter((item: MarketInfo) => 
-                    filterCodes.includes(item.code));
-                setMarketInfo(filteredData);
-            })
-            .catch(error => console.error("Error fetching market info:", error)); 
+        const fetchData = () => {
+            if (document.visibilityState === "visible") {
+                console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
+                axios.get('http://localhost:5000/market')
+                .then(response => {
+                    const filteredData = response.data
+                        .filter((item: MarketInfo) => filterCodes.includes(item.code))
+                        .sort((a: MarketInfo, b: MarketInfo) => 
+                            filterCodes.indexOf(a.code) - filterCodes.indexOf(b.code)
+                    );
+                    setMarketInfo(filteredData);
+                })
+                .catch(error => console.error("Error fetching market info:", error)); 
+            }
+        }
+
+        fetchData();
+        const interval = setInterval(fetchData, 10000);
+        return () => clearInterval(interval);
     }, [filterCodes, setMarketInfo]);
 
     if (!marketInfo || marketInfo.length === 0) {
-        return <p>Loading...</p>;
+        return <a></a>;
     }
 }
 

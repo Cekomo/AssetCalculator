@@ -38,7 +38,7 @@
 #records {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    text-align: center;
+    right: 0;
 }
 
 #records li {
@@ -51,9 +51,31 @@
     color: #cccec8;
     line-height: 2;
     border-bottom: 1px solid #2b2a2a;
+    position: relative;
 }
 
+.field::after {
+    content: ''; 
+    position: absolute;
+    right: 0;
+    top: 20%; 
+    bottom: 20%;
+    width: 1px;
+    background-color: #2b2a2a
+}
 
 .field:last-child {
     border-right: none;
+}
+
+.text-left {
+    text-align: left;
+    flex: 1; 
+    padding-left: 16px;
+}
+
+.text-right {
+    text-align: right;
+    flex: 1; 
+    padding-right: 16px;
 }

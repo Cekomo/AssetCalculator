@@ -1,31 +1,40 @@
 import './Market.css';
 import { useState } from "react";
 import ParseMarketInfo from "../utility/JsonParser";
-import { formatDate } from "../utility/FormatModifier";
+import { formatDate, formatNumber } from "../utility/FormatModifier";
 
 export const Market = () => {
 
     const [marketInfo, setMarketInfo] = useState<MarketInfo[]>([]);
-    const filterCodes = ["USDTRY", "EURTRY", "ALTIN", "ONS", "EURUSD", "AYAR22", "KULCEALTIN", "ATA_YENI", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA5_YENI", "GREMESE_YENI", "CHFTRY", "GUMUSTRY", "AYAR14"];
+    const filterCodes = ["USDTRY", "EURTRY", "CHFTRY", "EURUSD", "ALTIN",  "ONS", 
+                         "KULCEALTIN", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA_YENI",   
+                         "ATA5_YENI", "GREMESE_YENI",  "AYAR22", "AYAR14", "GUMUSTRY"];
+    const adjustedCodeNames = ["USD / TRY", "EUR / TRY", "CHF / TRY", "EUR / USD", "ALTIN",  "ONS", 
+                               "KÜLÇE ALTIN", "ÇEYREK YENİ", "YARIM YENİ", "TAM YENİ", "ATA YENİ",   
+                               "ATA YENİ 5'Lİ", "GREMESE YENİ",  "22 AYAR", "14 AYAR", "GÜMÜŞ / TRY"];
+
+    const codeMap: Record<string, string> = Object.fromEntries(
+        filterCodes.map((code, index) => [code, adjustedCodeNames[index]])
+    );    
 
     return (
         <div id="market-body">
+            <ParseMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodes}/>
             <div id="header">
                 <a className="title">Birim</a>
                 <a className="title">Alış</a>
                 <a className="title">Satış</a>
-                <a className="title">Değişim</a>
+                <a className="title">Fark</a>
                 <a className="title">Tarih</a>
             </div>
             <div id="records">
-                <ParseMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodes}/>
                 {marketInfo.map((item) => (
                     <li key={item.code}>
-                        <a className='field'>{item.code}</a>
-                        <a className='field'>{Math.trunc(item.alis*1000)/1000}</a>
-                        <a className='field'>{Math.trunc(item.satis*1000)/1000}</a>
-                        <a className='field'>{Math.trunc((item.yuksek-item.dusuk)*10000)/10000}</a>
-                        <a className='field'>{formatDate(item.tarih)}</a>
+                        <a className="field text-left">{codeMap[item.code] || item.code}</a>
+                        <a className="field text-right">{formatNumber(item.alis, 2)}</a>
+                        <a className="field text-right">{formatNumber(item.satis, 2)}</a>
+                        <a className="field text-right">{formatNumber((item.satis - item.alis), 4)}</a>
+                        <a className="field text-left">{formatDate(item.tarih)}</a>
                     </li>
                     
                 ))}

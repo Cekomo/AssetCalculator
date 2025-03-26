@@ -13,5 +13,9 @@ export function formatDate(inputDate: string) {
     const time = dateParts[1].slice(0, 5); // Take only "HH:MM"
     
     // Format the output string
-    return `${day}.${month}.${year} ${time}`;
+    return `${day}.${month}.${year} - ${time}`;
+}
+
+export function formatNumber(value: number, maximumFractionDigits: number) {
+    return Number(value).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: maximumFractionDigits });
 }
