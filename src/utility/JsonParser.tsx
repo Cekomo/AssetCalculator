@@ -5,7 +5,7 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
-                console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
+                // console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
                 axios.get('http://localhost:5000/market')
                 .then(response => {
                     const filteredData = response.data
@@ -17,12 +17,16 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
                 })
                 .catch(error => console.error("Error fetching market info:", error)); 
             }
-        }
+        };
 
-        fetchData();
+        fetchData(); // Fetch immediately when mounted
+
         const interval = setInterval(fetchData, 10000);
-        return () => clearInterval(interval);
-    }, [filterCodes, setMarketInfo]);
+        
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     if (!marketInfo || marketInfo.length === 0) {
         return <a></a>;

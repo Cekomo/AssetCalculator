@@ -6,6 +6,7 @@ import { formatDate, formatNumber } from "../utility/FormatModifier";
 export const Market = () => {
 
     const [marketInfo, setMarketInfo] = useState<MarketInfo[]>([]);
+    // relocate arrays below into another file as web service json integration
     const filterCodes = ["USDTRY", "EURTRY", "CHFTRY", "EURUSD", "ALTIN",  "ONS", 
                          "KULCEALTIN", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA_YENI",   
                          "ATA5_YENI", "GREMESE_YENI",  "AYAR22", "AYAR14", "GUMUSTRY"];
