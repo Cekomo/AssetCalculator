@@ -9,8 +9,8 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
                 axios.get('http://localhost:5000/market')
                 .then(response => {
                     const filteredData = response.data
-                        .filter((item: MarketInfo) => filterCodes.includes(item.code))
-                        .sort((a: MarketInfo, b: MarketInfo) => 
+                        .filter((item: MarketInfoApiluna) => filterCodes.includes(item.code))
+                        .sort((a: MarketInfoApiluna, b: MarketInfoApiluna) => 
                             filterCodes.indexOf(a.code) - filterCodes.indexOf(b.code)
                     );
                     setMarketInfo(filteredData);
@@ -35,13 +35,55 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
 
 export default ParseMarketInfo;
 
+export const StructureJsonFormat: React.FC<ParseMarketInfoPropsTruncgil> = ({ marketInfo, setMarketInfo, filterCodes }) => {
+    useEffect(() => {
+        const fetchData = () => {
+            if (document.visibilityState === "visible") {
+                console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
+                axios.get('http://localhost:5000/market')
+                .then(response => {
+                    const metaData = response.data.Meta_Data ?? {};
+                    const rawData = response.data.Rates;
+                    const transformedData = Object.entries(rawData)
+                        .filter(([code]) => filterCodes.includes(code))
+                        .map(([code, details]: [string, any]) => ({
+                            code: code,
+                            alis: details.Buying,
+                            satis: details.Selling,
+                            tarih: metaData.Update_Date
+                        }));
+                        setMarketInfo(transformedData);
+                })
+                .catch(error => console.error("Error fetching market info:", error)); 
+            }
+        };
+
+        fetchData();
+        const interval = setInterval(fetchData, 10000);
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    if (!marketInfo || marketInfo.length === 0) {
+        return <a></a>;
+    }
+}
+
+
 interface ParseMarketInfoProps {
-    marketInfo: MarketInfo[];
-    setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfo[]>>;
+    marketInfo: MarketInfoApiluna[];
+    setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoApiluna[]>>;
     filterCodes: string[];
 }
 
-interface MarketInfo {
+interface ParseMarketInfoPropsTruncgil {
+    marketInfo: MarketInfoTruncgil[];
+    setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoTruncgil[]>>;
+    filterCodes: string[];
+}
+
+interface MarketInfoApiluna {
     code: string;
     alis: number;
     satis: number;
@@ -50,3 +92,14 @@ interface MarketInfo {
     kapanis: number;
     tarih: string;
 }
+
+interface MarketInfoTruncgil {
+    code: string;
+    alis: number;
+    satis: number;
+    dusuk?: number | null;
+    yuksek?: number | null;
+    kapanis?: number | null;
+    tarih?: string | null;
+}
+

@@ -9,9 +9,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const api_url_apiluna = "https://kapalicarsi.apiluna.org";
+const api_url_truncgil = "https://finance.truncgil.com/api/today.json";
+
+
 app.get("/market", async (req, res) => {
     try {
-      const response = await axios.get("https://kapalicarsi.apiluna.org");
+      const response = await axios.get(api_url_truncgil);
       res.json(response.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
