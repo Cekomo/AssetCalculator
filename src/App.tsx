@@ -3,7 +3,7 @@ import './App.css'
 import Navbar from './navbar/Navbar'
 import Home from "./pages/Home";
 import Wealth from "./pages/Wealth";
-import Market from "./pages/Market";
+import Market from "./pages/market/Market";
 import Weather from "./pages/Weather";
 import About from "./pages/About";
 

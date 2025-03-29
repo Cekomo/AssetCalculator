@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 
-const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarketInfo, filterCodes }) => {
+export const ParseArrayMarketInfo: React.FC<MarketPropsApiluna> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
@@ -19,7 +19,7 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
             }
         };
 
-        fetchData(); // Fetch immediately when mounted
+        fetchData();
 
         const interval = setInterval(fetchData, 10000);
         
@@ -33,9 +33,7 @@ const ParseMarketInfo: React.FC<ParseMarketInfoProps> = ({ marketInfo, setMarket
     }
 }
 
-export default ParseMarketInfo;
-
-export const StructureJsonFormat: React.FC<ParseMarketInfoPropsTruncgil> = ({ marketInfo, setMarketInfo, filterCodes }) => {
+export const ParseObjectMarketInfo: React.FC<MarketPropsTruncgil> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
@@ -71,13 +69,13 @@ export const StructureJsonFormat: React.FC<ParseMarketInfoPropsTruncgil> = ({ ma
 }
 
 
-interface ParseMarketInfoProps {
+interface MarketPropsApiluna {
     marketInfo: MarketInfoApiluna[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoApiluna[]>>;
     filterCodes: string[];
 }
 
-interface ParseMarketInfoPropsTruncgil {
+interface MarketPropsTruncgil {
     marketInfo: MarketInfoTruncgil[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoTruncgil[]>>;
     filterCodes: string[];

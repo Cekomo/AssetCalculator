@@ -15,7 +15,7 @@ const api_url_truncgil = "https://finance.truncgil.com/api/today.json";
 
 app.get("/market", async (req, res) => {
     try {
-      const response = await axios.get(api_url_truncgil);
+      const response = await axios.get(api_url_apiluna);
       res.json(response.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
