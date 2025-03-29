@@ -18,7 +18,7 @@ export const Market = () => {
         <div id="market-body">
             <ParseArrayMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna}/>
             {/* <ParseObjectMarketInfo marketInfo={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodes}/> */}
-            <div id="header">
+            <div id="market-header">
                 <a className="title">Birim</a>
                 <a className="title">Alış</a>
                 <a className="title">Satış</a>

@@ -1,81 +1,79 @@
 
 
 #nav-container {
-    display: flex;
-    align-items: center;
-    height: 96vh;
-    width: 90px; /* 104px initally*/
+  display: flex;
+  align-items: center;
+  height: 96vh;
+  width: 90px; /* 104px initally*/
 }
 
 #navbar {
-    display: flex;
-    background-color: rgb(28, 32, 32);
-    margin-left: 12px;
-    height: 96vh;
-    width: 72px;
-    justify-content: center;
+  display: flex;
+  background-color: rgb(28, 32, 32);
+  margin-left: 12px;
+  height: 96vh;
+  width: 72px;
+  justify-content: center;
 }
 
 .nav-elements {
-    list-style: none;
+  list-style: none;
 }
 
 #nav-icon img {
-    width: 32px;
-    height: 32px;
-    margin-top: 16px;
-    transition: all 0.3s ease;
-    
+  width: 32px;
+  height: 32px;
+  margin-top: 16px;
+  transition: all 0.3s ease;
 }
 
 #nav-icon img:hover {
-    animation: glow-icon 1.5s ease-in-out infinite;
-    transform: scale(1.05);
+  animation: glow-icon 1.5s ease-in-out infinite;
+  transform: scale(1.05);
 }
 
 .nav-line {
-    margin-top: 16px;
-    border-bottom: 2px solid rgb(50, 50, 50);
+  margin-top: 16px;
+  border-bottom: 2px solid rgb(50, 50, 50);
 }
 
 .nav-item {
-    display: block;
-    margin-top: 24px;    
-    font-size: 24px;
-    margin-left: 3px; /* quick fix for center alignment */
-    transition: transform 0.3s ease;    
+  display: block;
+  margin-top: 24px;    
+  font-size: 24px;
+  margin-left: 3px; /* quick fix for center alignment */
+  transition: transform 0.3s ease;    
 }
 
 .nav-item svg {
-    color: rgb(204, 206, 200);
-    
+  color: rgb(204, 206, 200);
 }
 
 .nav-item:hover {
-    transform: translateY(-6px);
-    animation: glow-item 2s ease-in-out;
+  transform: translateY(-6px);
+  animation: glow-item 2s ease-in-out;
 }
 
 @keyframes glow-icon {
-    0% {
-      filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-    }
-    50% {
-      filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-    }
-    100% {
-      filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-    }
+  0% {
+    filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  }
 }
 
 @keyframes glow-item {
-    0% {
-      filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
-    }
-    50% {
-      filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-    }
-    100% {
-      filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
-    }
+  0% {
+    filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 1px rgba(255, 255, 255, 0.5));
+  }
 }

@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import './App.css'
 import Navbar from './navbar/Navbar'
 import Home from "./pages/Home";
-import Wealth from "./pages/Wealth";
+import Wealth from "./pages/wealth/Wealth";
 import Market from "./pages/market/Market";
-import Weather from "./pages/Weather";
+import Weather from "./pages/weather/Weather";
 import About from "./pages/About";
 
 function App() {
