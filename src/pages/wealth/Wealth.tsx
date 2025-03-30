@@ -1,6 +1,10 @@
 import './Wealth.css';
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { adjustedCodesTruncgil} from '../Market/MarketStructure.ts';
+
+
 
 export const Wealth = () => {
     return (
@@ -13,12 +17,12 @@ export const Wealth = () => {
             </div>
             <div id="asset-records">
                 <li id="asset-row">
-                    <a className="field text-center">Gram Altin</a>
+                    <div className="field text-center"><Dropdown /></div>
                     <a className="field text-right">3.822,48</a>
-                    <a className="field text-right">6</a>
+                    <a className="field text-right editable"></a>
                     <div className="field last-field">
                         <a className="text-right">1000</a>
-                        <a className="text-right plus-icon"><FontAwesomeIcon icon={faTrashCan} /></a>
+                        <button className="text-right plus-icon"><FontAwesomeIcon icon={faTrashCan} /></button>
                     </div>
                 </li>
                 <li id="blank-asset-row">
@@ -27,7 +31,7 @@ export const Wealth = () => {
                     <a className="blank-last-field"></a>
                     <div className="field blank-last-field">
                         <a className="text-right"></a>
-                        <a className="text-right plus-icon"><FontAwesomeIcon icon={faPlus} /></a>
+                        <button className="text-right plus-icon"><FontAwesomeIcon icon={faPlus} /></button>
                     </div>
                 </li>
             </div>
@@ -36,3 +40,48 @@ export const Wealth = () => {
 };
 
 export default Wealth;
+
+
+
+const Dropdown = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedOption, setSelectedOption] = useState("Varlık Seç");
+    const dropdownRef = useRef(null);
+
+    const toggleDropdown = () => setIsOpen(!isOpen);
+
+    // Handle option selection
+    const handleSelect = (option: string) => {
+        setSelectedOption(option); // Update button text
+        setIsOpen(false); // Close dropdown
+    };
+
+    // Close dropdown if clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    return (
+        <div className="dropdown" ref={dropdownRef}>
+            <button onClick={toggleDropdown} className="dropdown-button">
+                <span className="dropdown-text">{selectedOption}</span>
+                <span className='dropdown-icon'><FontAwesomeIcon icon={faCaretDown} /></span>
+            </button>
+            {isOpen && (
+                <div className="dropdown-menu">
+                    {adjustedCodesTruncgil.map((item) => (
+                        <li key={item}>
+                            <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
+                        </li>              
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};

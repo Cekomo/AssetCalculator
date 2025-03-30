@@ -7,6 +7,7 @@ import Market from "./pages/market/Market";
 import Weather from "./pages/weather/Weather";
 import About from "./pages/About";
 
+
 function App() {
   return (
     <BrowserRouter>

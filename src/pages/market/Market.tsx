@@ -5,6 +5,7 @@ import { formatDate, formatNumber } from "../../utility/FormatModifier.tsx";
 import { MarketInfoApiluna, MarketInfoTruncgil, filterCodesApiluna, 
         adjustedCodesApiluna, filterCodesTruncgil, adjustedCodesTruncgil} from './MarketStructure.ts';
 
+
 export const Market = () => {
 
     const [marketInfo, setMarketInfo] = useState<MarketInfoApiluna[]>([]);
