@@ -18,6 +18,11 @@ export interface MarketInfoTruncgil {
     tarih?: string | null;
 }
 
+export interface MarketInfoMinimal {
+    code: string;
+    alis: number;
+}
+
 export const filterCodesApiluna = ["USDTRY", "EURTRY", "CHFTRY", "EURUSD", "ALTIN",  "ONS", 
                                    "KULCEALTIN", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA_YENI",   
                                    "ATA5_YENI", "GREMESE_YENI",  "AYAR22", "AYAR14", "GUMUSTRY"];
@@ -26,8 +31,8 @@ export const adjustedCodesApiluna = ["USD / TRY", "EUR / TRY", "CHF / TRY", "EUR
                                      "ATA YENİ 5'Lİ", "GREMESE YENİ",  "22 AYAR", "14 AYAR", "GÜMÜŞ / TRY"];
 
 export const filterCodesTruncgil = ["USD", "EUR", "CHF", "GBP", "GRA",  "ONS", 
-                             "HAS", "CEY", "YAR", "TAM", "CUM", "BES",  
-                             "RES", "GRE",  "YIA", "ODA", "GUM"];
+                                    "HAS", "CEY", "YAR", "TAM", "CUM", "BES",  
+                                    "RES", "GRE",  "YIA", "ODA", "GUM"];
 export const adjustedCodesTruncgil = ["USD / TRY", "EUR / TRY", "CHF / TRY", "GBP / TRY", "ALTIN",  "ONS", 
                                       "KÜLÇE ALTIN", "ÇEYREK ALTIN", "YARIM ALTIN", "TAM ALTIN", "ATA ALTIN",   
                                       "ATA YENİ 5'Lİ", "REŞAT ALTIN", "GREMESE",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];

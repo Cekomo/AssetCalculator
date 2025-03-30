@@ -195,3 +195,27 @@
     border-radius: 0 0 8px 8px;
 }
   
+/*-----------------------------------------------*/
+  
+.editable-container {
+    width: 100%;
+}
+
+.editable-input {
+    font-family: 'Barlow', sans-serif;
+    border: none;
+    background: transparent;
+    cursor: text;
+    color: rgb(204, 206, 200);
+    font-size: 15px;
+    text-align: right;
+    outline: 1px solid #2b2a2a;
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 88%;
+}
+  
+.editable-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+  

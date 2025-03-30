@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { MarketInfoApiluna, MarketInfoTruncgil, MarketInfoMinimal } from '../pages/market/MarketStructure.ts';
 
 export const ParseArrayMarketInfo: React.FC<MarketPropsApiluna> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
@@ -69,6 +70,50 @@ export const ParseObjectMarketInfo: React.FC<MarketPropsTruncgil> = ({ marketInf
 }
 
 
+export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMinimal, setMarketInfo, filterCodes, selectedCode }) => {
+    useEffect(() => {
+        const fetchData = () => {
+            if (document.visibilityState === "visible") {
+                // console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
+                axios.get('http://localhost:5000/market')
+                .then(response => {
+                    const filteredData = response.data
+                        .filter((item: MarketInfoMinimal) => filterCodes.includes(item.code))
+                        .sort((a: MarketInfoMinimal, b: MarketInfoMinimal) => 
+                            filterCodes.indexOf(a.code) - filterCodes.indexOf(b.code)
+                    );
+                    setMarketInfo(filteredData);
+                })
+                .catch(error => console.error("Error fetching market info:", error)); 
+            }
+        };
+
+        fetchData();
+
+        const interval = setInterval(fetchData, 10000);
+        
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    if (!marketInfoMinimal || marketInfoMinimal.length === 0) {
+        return <a></a>;
+    }
+    
+    const selectedItem = marketInfoMinimal.find(item => item.code === selectedCode);
+    return (
+        <div>
+            {selectedItem ? (
+                <span>{selectedItem.alis}</span>
+            ) : (
+                <span>-</span>
+            )}
+        </div>
+    );
+}
+
+
 interface MarketPropsApiluna {
     marketInfo: MarketInfoApiluna[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoApiluna[]>>;
@@ -81,23 +126,9 @@ interface MarketPropsTruncgil {
     filterCodes: string[];
 }
 
-interface MarketInfoApiluna {
-    code: string;
-    alis: number;
-    satis: number;
-    dusuk: number;
-    yuksek: number;
-    kapanis: number;
-    tarih: string;
+interface MarketPropsMinimal {
+    marketInfoMinimal: MarketInfoMinimal[];
+    setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoMinimal[]>>;
+    filterCodes: string[];
+    selectedCode: string | null;
 }
-
-interface MarketInfoTruncgil {
-    code: string;
-    alis: number;
-    satis: number;
-    dusuk?: number | null;
-    yuksek?: number | null;
-    kapanis?: number | null;
-    tarih?: string | null;
-}
-
