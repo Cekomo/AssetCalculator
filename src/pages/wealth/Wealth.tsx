@@ -3,16 +3,19 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { filterCodesApiluna, adjustedCodesApiluna, MarketInfoMinimal} from '../market/MarketStructure.ts';
-import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
+// import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
 
 
 export const Wealth = () => {
     const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]);
     const [selectedCode, setSelectedCode] = useState<string | null>(null);
+    const [quantity, setQuantity] = useState("1");
 
-  const handleDropdownSelect = (code: string) => {
-    setSelectedCode(code);
-  };
+    const handleDropdownSelect = (code: string) => {
+        setSelectedCode(code);
+    };
+
+    const selectedItem = marketInfo.find(item => item.code === selectedCode);
 
     return (
         <div id="wealth-body">
@@ -23,18 +26,16 @@ export const Wealth = () => {
                 <a className="title">Toplam</a>
             </div>
             <div id="asset-records">
-                <li id="asset-row">
+                <div id="asset-row">
                     <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div>
-                    <div className="field text-right">
-                        <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} selectedCode={selectedCode}/>
-                    </div>
-                    <a className="field text-center"><EditableNumber/></a>
+                    <div className="field text-right">{selectedItem?.alis ?? '-'}</div>
+                    <a className="field text-center"><EditableNumber value={quantity} onChange={setQuantity}/></a>
                     <div className="field last-field">
-                        <a className="text-right">1000</a>
-                        <button className="text-right plus-icon"><FontAwesomeIcon icon={faTrashCan} /></button>
+                        <a className="text-right">{Math.floor(((selectedItem?.alis ?? 0) * (Number(quantity ?? 0))) * 100) / 100}</a>
+                        <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
                     </div>
-                </li>
-                <li id="blank-asset-row">
+                </div>
+                {/* <div id="blank-asset-row">
                     <a className="blank-last-field"></a>
                     <a className="blank-last-field"></a>
                     <a className="blank-last-field"></a>
@@ -42,7 +43,7 @@ export const Wealth = () => {
                         <a className="text-right"></a>
                         <button className="text-right plus-icon"><FontAwesomeIcon icon={faPlus} /></button>
                     </div>
-                </li>
+                </div> */}
             </div>
         </div>
     );
@@ -98,11 +99,16 @@ interface DropdownProps {
 }
 
 
-const EditableNumber = () => {
-    const [number, setNumber] = useState("1");
+
+const EditableNumber = ({ value, onChange}: {value: string; onChange: (newValue: string) => void}) => {
+    const [number, setNumber] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
   
+    useEffect(() => {
+        setNumber(value);
+    }, [value]); 
+
     const handleFocus = () => {
       setIsEditing(true);
       setTimeout(() => inputRef.current?.select(), 0);
@@ -110,13 +116,19 @@ const EditableNumber = () => {
   
     const handleBlur = () => setIsEditing(false);
   
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setNumber(newValue);
+        onChange(newValue);
+    };
+
     return (
       <div className="editable-container">
         <input
           ref={inputRef}
           type="number"
           value={number}
-          onChange={(e) => setNumber(e.target.value)}
+          onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={`editable-input ${isEditing ? "active" : ""}`}

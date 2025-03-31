@@ -100,17 +100,6 @@ export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMini
     if (!marketInfoMinimal || marketInfoMinimal.length === 0) {
         return <a></a>;
     }
-    
-    const selectedItem = marketInfoMinimal.find(item => item.code === selectedCode);
-    return (
-        <div>
-            {selectedItem ? (
-                <span>{selectedItem.alis}</span>
-            ) : (
-                <span>-</span>
-            )}
-        </div>
-    );
 }
 
 

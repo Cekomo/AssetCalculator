@@ -35,11 +35,8 @@
     /* right: 0; */
 }
 
-#asset-records li {
-    display: contents;
-}
-
 #asset-row {
+    display: contents;
     color: #cccec8;
     line-height: 2;
     border-bottom: 1px solid #2b2a2a;
