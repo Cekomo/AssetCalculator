@@ -23,6 +23,14 @@ export interface MarketInfoMinimal {
     alis: number;
 }
 
+export interface AssetInfo {
+    index: number;
+    code: string;
+    value: number;
+    quantity: number;
+    total: number;
+}
+
 export const filterCodesApiluna = ["USDTRY", "EURTRY", "CHFTRY", "EURUSD", "ALTIN",  "ONS", 
                                    "KULCEALTIN", "CEYREK_YENI", "YARIM_YENI", "TEK_YENI", "ATA_YENI",   
                                    "ATA5_YENI", "GREMESE_YENI",  "AYAR22", "AYAR14", "GUMUSTRY"];

@@ -29,10 +29,16 @@
     border-right: none;
 }
 
-#asset-records {
+/* #asset-records {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    list-style-type: none;
+} */
+
+#asset-records li {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    /* right: 0; */
+    list-style-type: none;
 }
 
 #asset-row {
@@ -162,6 +168,7 @@
     flex-direction: column;
     max-height: 260px;
     overflow-y: auto;
+    z-index: 1000;
 }
 
 .dropdown-menu::-webkit-scrollbar {

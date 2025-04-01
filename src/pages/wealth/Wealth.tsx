@@ -2,26 +2,32 @@ import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { filterCodesApiluna, adjustedCodesApiluna, MarketInfoMinimal} from '../market/MarketStructure.ts';
+import { filterCodesApiluna, MarketInfoMinimal, AssetInfo} from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
 // import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
-import { formatNumber } from "../../utility/FormatModifier.tsx";
+// import { formatNumber } from "../../utility/FormatModifier.tsx";
 
 
 export const Wealth = () => {
-    const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]);
-    const [selectedCode, setSelectedCode] = useState<string | null>(null);
+    const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]); // why is this an array do I need it?
+    const [wealthInfo, setWealthInfo] = useState<AssetInfo[]>([]);
+    const [selectedCodes, setSelectedCodes] = useState<(string | null)[]>([]);
     const [quantity, setQuantity] = useState("1");
 
-    const handleDropdownSelect = (code: string) => {
-        setSelectedCode(code);
+    const handleDropdownSelect = (index: number, code: string) => {
+        setWealthInfo(prevWealthInfo => {
+            const updatedWealthInfo = [...prevWealthInfo];
+            updatedWealthInfo[index].code = code;  // Update the 'code' field
+            return updatedWealthInfo;
+        });
     };
 
-    const selectedItem = marketInfo.find(item => item.code === selectedCode);
+    // const selectedItem = marketInfo.find(item => item.code === selectedCode);
+
 
     return (
         <div id="wealth-body">
-            <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} selectedCode={selectedCode}/>
+            {/* <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} selectedCode={selectedCode}/> */}
             <div id="wealth-header">
                 <a className="title">Varlık</a>
                 <a className="title">Değer (₺)</a>
@@ -29,17 +35,41 @@ export const Wealth = () => {
                 <a className="title">Toplam</a>
             </div>
             <div id="asset-records">
-                <div id="asset-row">
-                    <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div>
-                    <div className="field text-right">
-                        { formatNumber(Number(selectedItem?.alis ?? 0), 3) }
+                {wealthInfo.map((item) => (
+                    <li key={item.index}>
+                        <div id="asset-row">
+                            {/* <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div> */}
+                            <div className="field text-center">
+                                {wealthInfo.map((asset, index) => (
+                                    <Dropdown 
+                                        key={index} 
+                                        selectedOption={asset.code}
+                                        onSelect={(code) => handleDropdownSelect(index, code)}
+                                    />
+                                ))}
+                            </div>
+                            <div className="field text-right">
+                                
+                                </div>
+                            <a className="field text-center"><EditableNumber value={quantity} onChange={setQuantity}/></a>
+                            <div className="field last-field">
+                                <a className="text-right">  </a>
+                                <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
+                            </div>
                         </div>
-                    <a className="field text-center"><EditableNumber value={quantity} onChange={setQuantity}/></a>
-                    <div className="field last-field">
-                        <a className="text-right"> { formatNumber(((selectedItem?.alis ?? 0) * Number(quantity ?? 0)), 3) } </a>
-                        <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
+                    </li>
+                ))}
+                <li>
+                    <div id="asset-row">
+                        <div className="field text-center"></div>
+                        <div className="field text-right"></div>
+                        <div className="field text-right"></div>
+                        <div className="field last-field">
+                            <a className="text-right"> </a>
+                            <button className="text-right plus-icon"><FontAwesomeIcon icon={ faPlus } onClick={() => AddAssetRow(wealthInfo, setWealthInfo)} /></button>
+                        </div>
                     </div>
-                </div>
+                </li>
             </div>
         </div>
     );
@@ -47,16 +77,27 @@ export const Wealth = () => {
 
 export default Wealth;
 
+function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>) {
+    const indices = wealthInfo.map(asset => asset.index);
+    const newAsset: AssetInfo = {
+        index: wealthInfo.length > 0 ? Math.max(...indices) + 1 : 1,
+        code: '',
+        value: 0,
+        quantity: 0,
+        total: 0,
+    };
 
-const Dropdown:React.FC<DropdownProps> = ({ onSelect }) => {
+    setWealthInfo(prevWealthInfo => [...prevWealthInfo, newAsset]);
+}
+
+
+const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("Varlık Seç");
     const dropdownRef = useRef(null);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     const handleSelect = (option: string) => {
-        setSelectedOption(option);
         onSelect(option);
         setIsOpen(false);
     };
@@ -80,9 +121,9 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect }) => {
             {isOpen && (
                 <div className="dropdown-menu">
                     {filterCodesApiluna.map((item) => (
-                        <li key={item}>
+                        <div key={item}>
                             <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
-                        </li>              
+                        </div>              
                     ))}
                 </div>
             )}
@@ -92,6 +133,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect }) => {
 
 interface DropdownProps {
     onSelect: (selectedValue: string) => void;
+    selectedOption: string | null;
 }
 
 
