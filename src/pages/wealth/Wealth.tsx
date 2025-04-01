@@ -3,7 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { filterCodesApiluna, adjustedCodesApiluna, MarketInfoMinimal} from '../market/MarketStructure.ts';
+import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
 // import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
+import { formatNumber } from "../../utility/FormatModifier.tsx";
 
 
 export const Wealth = () => {
@@ -19,6 +21,7 @@ export const Wealth = () => {
 
     return (
         <div id="wealth-body">
+            <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} selectedCode={selectedCode}/>
             <div id="wealth-header">
                 <a className="title">Varlık</a>
                 <a className="title">Değer (₺)</a>
@@ -28,22 +31,15 @@ export const Wealth = () => {
             <div id="asset-records">
                 <div id="asset-row">
                     <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div>
-                    <div className="field text-right">{selectedItem?.alis ?? '-'}</div>
+                    <div className="field text-right">
+                        { formatNumber(Number(selectedItem?.alis ?? 0), 3) }
+                        </div>
                     <a className="field text-center"><EditableNumber value={quantity} onChange={setQuantity}/></a>
                     <div className="field last-field">
-                        <a className="text-right">{Math.floor(((selectedItem?.alis ?? 0) * (Number(quantity ?? 0))) * 100) / 100}</a>
+                        <a className="text-right"> { formatNumber(((selectedItem?.alis ?? 0) * Number(quantity ?? 0)), 3) } </a>
                         <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
                     </div>
                 </div>
-                {/* <div id="blank-asset-row">
-                    <a className="blank-last-field"></a>
-                    <a className="blank-last-field"></a>
-                    <a className="blank-last-field"></a>
-                    <div className="field blank-last-field">
-                        <a className="text-right"></a>
-                        <button className="text-right plus-icon"><FontAwesomeIcon icon={faPlus} /></button>
-                    </div>
-                </div> */}
             </div>
         </div>
     );

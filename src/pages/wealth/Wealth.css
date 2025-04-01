@@ -140,7 +140,7 @@
 .dropdown-text {
     flex-grow: 1;
     text-align: center;
-  }
+}
 
 .dropdown-icon {
     position: absolute;
@@ -160,7 +160,7 @@
     box-shadow: 2px 4px 3px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    max-height: 260px;  /* Adjust this value as needed */
+    max-height: 260px;
     overflow-y: auto;
 }
 
@@ -183,6 +183,7 @@
 }
   
 .dropdown-item {
+    display: block;
     padding: 10px;
     cursor: pointer;
 }
