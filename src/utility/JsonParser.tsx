@@ -70,7 +70,7 @@ export const ParseObjectMarketInfo: React.FC<MarketPropsTruncgil> = ({ marketInf
 }
 
 
-export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMinimal, setMarketInfo, filterCodes, selectedCode }) => {
+export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMinimal, setMarketInfo, filterCodes }) => {
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
@@ -119,5 +119,4 @@ interface MarketPropsMinimal {
     marketInfoMinimal: MarketInfoMinimal[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoMinimal[]>>;
     filterCodes: string[];
-    selectedCode: string | null;
 }

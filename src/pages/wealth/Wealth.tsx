@@ -2,8 +2,9 @@ import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { filterCodesApiluna, MarketInfoMinimal, AssetInfo} from '../market/MarketStructure.ts';
+import { filterCodesApiluna, MarketInfoMinimal, AssetInfo } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
+import { formatNumber } from '../../utility/FormatModifier.tsx';
 // import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
 // import { formatNumber } from "../../utility/FormatModifier.tsx";
 
@@ -11,7 +12,8 @@ import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
 export const Wealth = () => {
     const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]); // why is this an array do I need it?
     const [wealthInfo, setWealthInfo] = useState<AssetInfo[]>([]);
-    const [selectedCodes, setSelectedCodes] = useState<(string | null)[]>([]);
+    // const [marketArrayInfo, setMarketArrayInfo] = useState<MarketInfoApiluna[]>([]);
+    // const [selectedCodes, setSelectedCodes] = useState<(string[])>([]);
     const [quantity, setQuantity] = useState("1");
 
     const handleDropdownSelect = (index: number, code: string) => {
@@ -22,12 +24,18 @@ export const Wealth = () => {
         });
     };
 
-    // const selectedItem = marketInfo.find(item => item.code === selectedCode);
-
+    const handleEditableField = (index: number, quantity: number) => {
+        setWealthInfo(prevWealthInfo => {
+            const updatedWealthInfo = [...prevWealthInfo];
+            updatedWealthInfo[index].quantity = quantity;
+            return updatedWealthInfo;
+        });
+    };
 
     return (
         <div id="wealth-body">
-            {/* <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} selectedCode={selectedCode}/> */}
+            <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} />
+            {/* <ParseObjectMarketInfo marketInfo={marketArrayInfo} setMarketInfo={setMarketArrayInfo} filterCodes={filterCodesApiluna}/> */}
             <div id="wealth-header">
                 <a className="title">Varlık</a>
                 <a className="title">Değer (₺)</a>
@@ -35,25 +43,31 @@ export const Wealth = () => {
                 <a className="title">Toplam</a>
             </div>
             <div id="asset-records">
-                {wealthInfo.map((item) => (
+                {wealthInfo.map((item, index) => (
                     <li key={item.index}>
                         <div id="asset-row">
                             {/* <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div> */}
                             <div className="field text-center">
-                                {wealthInfo.map((asset, index) => (
-                                    <Dropdown 
-                                        key={index} 
-                                        selectedOption={asset.code}
-                                        onSelect={(code) => handleDropdownSelect(index, code)}
-                                    />
-                                ))}
+                                <Dropdown 
+                                    key={index} 
+                                    selectedOption={item.code || 'Varlık Seç'}
+                                    onSelect={(code) => handleDropdownSelect(index, code)}
+                                />
                             </div>
                             <div className="field text-right">
-                                
+                                { marketInfo.find(market => market.code === item.code)?.alis ?? null }
                                 </div>
-                            <a className="field text-center"><EditableNumber value={quantity} onChange={setQuantity}/></a>
+                            <a className="field text-center">
+                                <EditableNumber 
+                                    key={index}
+                                    value={quantity} 
+                                    onChange={(newValue) => handleEditableField(index, Number(newValue))}
+                                />
+                            </a>
                             <div className="field last-field">
-                                <a className="text-right">  </a>
+                                <a className="text-right">
+                                { formatNumber(((marketInfo.find(market => market.code === item.code)?.alis ?? 0) * item.quantity), 3) }
+                                </a>
                                 <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
                             </div>
                         </div>
@@ -133,7 +147,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
 
 interface DropdownProps {
     onSelect: (selectedValue: string) => void;
-    selectedOption: string | null;
+    selectedOption: string;
 }
 
 
