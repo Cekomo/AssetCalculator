@@ -68,7 +68,7 @@ export const Wealth = () => {
                                 <a className="text-right">
                                 { formatNumber(((marketInfo.find(market => market.code === item.code)?.alis ?? 0) * item.quantity), 3) }
                                 </a>
-                                <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan} /></button>
+                                <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => DeleteAssetRow(item.index, setWealthInfo)} /></button>
                             </div>
                         </div>
                     </li>
@@ -84,6 +84,14 @@ export const Wealth = () => {
                         </div>
                     </div>
                 </li>
+            </div>
+            <div id='bottom-container'>
+                <div></div>
+                <div></div>
+                <div className="text-right"></div>
+                <div className="text-right" id='total-field'>
+                    { formatNumber(wealthInfo.reduce((sum, item) => sum + item.value, 0), 3) }
+                </div>
             </div>
         </div>
     );
@@ -104,6 +112,12 @@ function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<Reac
     setWealthInfo(prevWealthInfo => [...prevWealthInfo, newAsset]);
 }
 
+
+function DeleteAssetRow(index: number, setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>) {
+    setWealthInfo(prevWealthInfo => 
+        prevWealthInfo.filter(item => item.index !== index)
+    );
+}
 
 const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
     const [isOpen, setIsOpen] = useState(false);
