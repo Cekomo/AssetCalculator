@@ -2,7 +2,7 @@ import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { filterCodesApiluna, MarketInfoMinimal, AssetInfo } from '../market/MarketStructure.ts';
+import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
 import { formatNumber } from '../../utility/FormatModifier.tsx';
 // import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
@@ -12,28 +12,38 @@ import { formatNumber } from '../../utility/FormatModifier.tsx';
 export const Wealth = () => {
     const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]); // why is this an array do I need it?
     const [wealthInfo, setWealthInfo] = useState<AssetInfo[]>([]);
-    // const [marketArrayInfo, setMarketArrayInfo] = useState<MarketInfoApiluna[]>([]);
-    // const [selectedCodes, setSelectedCodes] = useState<(string[])>([]);
-    const [quantity, setQuantity] = useState("1");
+    const [currencyType, setCurrencyType] = useState('USDTRY');
+    const [quantity, setQuantity] = useState(1);
 
-    const handleDropdownSelect = (index: number, code: string) => {
-        setWealthInfo(prevWealthInfo => {
-            const updatedWealthInfo = [...prevWealthInfo];
-            updatedWealthInfo[index].code = code;  // Update the 'code' field
-            return updatedWealthInfo;
-        });
+    const calculateItemTotal = (item: AssetInfo) => {
+        const asset = marketInfo.find(marketAsset => (marketAsset.code === item.code))
+        return (asset?.alis ?? 0) * item.quantity;
     };
 
-    const handleEditableField = (index: number, quantity: number) => {
-        setWealthInfo(prevWealthInfo => {
-            const updatedWealthInfo = [...prevWealthInfo];
-            updatedWealthInfo[index].quantity = quantity;
-            return updatedWealthInfo;
-        });
-    };
-
+    const updateAssetElement = (
+        index: number,
         attribute: keyof AssetInfo,
         value: number | string
+    ) => {
+        setWealthInfo(prev =>
+            prev.map((item, i) => {
+            if (i !== index) return item;
+            const updatedItem = {
+                ...item,
+                [attribute]: value,
+            };
+        
+            const shouldRecalculateTotal = (['quantity', 'value', 'code']).includes(attribute);
+            return shouldRecalculateTotal
+                ? {
+                    ...updatedItem,
+                    total: calculateItemTotal(updatedItem),
+                }
+                : updatedItem;
+            })
+        );
+    };
+
     return (
         <div id="wealth-body">
             <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} />
@@ -53,7 +63,10 @@ export const Wealth = () => {
                                 <Dropdown 
                                     key={index} 
                                     selectedOption={item.code || 'Varlık Seç'}
-                                    onSelect={(code) => handleDropdownSelect(index, code)}
+                                    onSelect={(code) => {
+                                        updateAssetElement(index, 'code', code);
+                                    }}
+                                    filterCodes={filterCodesApiluna}
                                 />
                             </div>
                             <div className="field text-right">
@@ -63,12 +76,14 @@ export const Wealth = () => {
                                 <EditableNumber 
                                     key={index}
                                     value={quantity} 
-                                    onChange={(newValue) => handleEditableField(index, Number(newValue))}
+                                    onChange={(newValue) => {
+                                        updateAssetElement(index, 'quantity', newValue);
+                                    }}
                                 />
                             </a>
                             <div className="field last-field">
                                 <a className="text-right">
-                                { formatNumber(((marketInfo.find(market => market.code === item.code)?.alis ?? 0) * item.quantity), 3) }
+                                { formatNumber(((wealthInfo.find(market => market.code === item.code)?.total ?? 0)), 3) }
                                 </a>
                                 <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => DeleteAssetRow(item.index, setWealthInfo)} /></button>
                             </div>
@@ -90,9 +105,18 @@ export const Wealth = () => {
             <div id='bottom-container'>
                 <div></div>
                 <div></div>
-                <div className="text-right"></div>
-                <div className="text-right" id='total-field'>
-                    { formatNumber(wealthInfo.reduce((sum, item) => sum + item.value, 0), 3) }
+                <div className="text-right" id='currency-dropdown'>
+                    <Dropdown 
+                        onSelect={(currency) => setCurrencyType(currency)}
+                        selectedOption={currencyType}
+                        filterCodes={currencyCodes}
+                        isUpward={true}
+                    />  
+                </div>
+                <div className="text-right " id='total-field'>
+                    <div className='field-input'>
+                        { formatNumber(wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0), 3) }
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,7 +131,7 @@ function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<Reac
         index: wealthInfo.length > 0 ? Math.max(...indices) + 1 : 1,
         code: '',
         value: 0,
-        quantity: 0,
+        quantity: 1,
         total: 0,
     };
 
@@ -121,9 +145,10 @@ function DeleteAssetRow(index: number, setWealthInfo: React.Dispatch<React.SetSt
     );
 }
 
-const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
+const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
+
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -146,11 +171,13 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
         <div className="dropdown" ref={dropdownRef}>
             <button onClick={toggleDropdown} className="dropdown-button">
                 <span className="dropdown-text">{selectedOption}</span>
-                <span className='dropdown-icon'><FontAwesomeIcon icon={faCaretDown} /></span>
+                <span className={`dropdown-icon ${isUpward ? 'caret-upward' : ''}`}>
+                    <FontAwesomeIcon icon={faCaretDown} />
+                </span>
             </button>
             {isOpen && (
-                <div className="dropdown-menu">
-                    {filterCodesApiluna.map((item) => (
+                <div className={`dropdown-menu ${isUpward ? 'dropdown-upward' : 'dropdown-downward'}`}>
+                    {filterCodes.map((item) => (
                         <div key={item}>
                             <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
                         </div>              
@@ -163,16 +190,18 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption }) => {
 
 interface DropdownProps {
     onSelect: (selectedValue: string) => void;
-    selectedOption: string;
+    selectedOption?: string;
+    filterCodes: string[];
+    isUpward?: boolean;
 }
 
 
 
-const EditableNumber = ({ value, onChange}: {value: string; onChange: (newValue: string) => void}) => {
+const EditableNumber = ({ value, onChange}: {value: string | number; onChange: (newValue: string) => void}) => {
     const [number, setNumber] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-  
+
     useEffect(() => {
         setNumber(value);
     }, [value]); 

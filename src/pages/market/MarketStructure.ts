@@ -44,3 +44,5 @@ export const filterCodesTruncgil = ["USD", "EUR", "CHF", "GBP", "GRA",  "ONS",
 export const adjustedCodesTruncgil = ["USD / TRY", "EUR / TRY", "CHF / TRY", "GBP / TRY", "ALTIN",  "ONS", 
                                       "KÜLÇE ALTIN", "ÇEYREK ALTIN", "YARIM ALTIN", "TAM ALTIN", "ATA ALTIN",   
                                       "ATA YENİ 5'Lİ", "REŞAT ALTIN", "GREMESE",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];
+
+export const currencyCodes = ["TRY", "USD", "EUR", "CHF"];
