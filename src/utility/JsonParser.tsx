@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
-import { MarketInfoApiluna, MarketInfoTruncgil, MarketInfoMinimal } from '../pages/market/MarketStructure.ts';
+import { MarketInfoApiluna, MarketInfoTruncgil, MarketInfoMinimal, CurrencyItem } from '../pages/market/MarketStructure.ts';
 
 export const ParseArrayMarketInfo: React.FC<MarketPropsApiluna> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
@@ -38,7 +38,6 @@ export const ParseObjectMarketInfo: React.FC<MarketPropsTruncgil> = ({ marketInf
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
-                console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
                 axios.get('http://localhost:5000/market')
                 .then(response => {
                     const metaData = response.data.Meta_Data ?? {};
@@ -81,7 +80,7 @@ export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMini
                         .filter((item: MarketInfoMinimal) => filterCodes.includes(item.code))
                         .sort((a: MarketInfoMinimal, b: MarketInfoMinimal) => 
                             filterCodes.indexOf(a.code) - filterCodes.indexOf(b.code)
-                    );
+                    );                   
                     setMarketInfo(filteredData);
                 })
                 .catch(error => console.error("Error fetching market info:", error)); 
@@ -103,6 +102,41 @@ export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMini
 }
 
 
+export const GetCurrencyInfo: React.FC<CurrencyProps> = ({ currencyInfo, setCurrencyInfo, filterCurrencyCodes } ) => {
+    useEffect(() => {
+        const fetchData = () => {
+            if (document.visibilityState === "visible") {
+                axios.get('http://localhost:5000/market')
+                    .then(response => {
+                        const updatedCurrencyInfo = (currencyInfo).map(currency => {
+                            const apiItem = response.data.find(
+                                (item: CurrencyItem) => filterCurrencyCodes.includes(item.code) &&
+                                item.code === currency.apiCode
+                            );
+                            return {
+                                ...currency,
+                                value: apiItem?.alis ?? currency.value
+                            };
+                        });
+                        setCurrencyInfo(updatedCurrencyInfo);
+                    })
+                .catch(error => console.error("Currency fetch error:", error));
+            }   
+        };
+        
+        fetchData();
+        const interval = setInterval(fetchData, 10000);
+        
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
+    if (!currencyInfo || currencyInfo.length === 0) {
+        return <a></a>;
+    }
+}
+
 interface MarketPropsApiluna {
     marketInfo: MarketInfoApiluna[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoApiluna[]>>;
@@ -119,4 +153,10 @@ interface MarketPropsMinimal {
     marketInfoMinimal: MarketInfoMinimal[];
     setMarketInfo: React.Dispatch<React.SetStateAction<MarketInfoMinimal[]>>;
     filterCodes: string[];
+}
+
+interface CurrencyProps {
+    currencyInfo: CurrencyItem[];
+    setCurrencyInfo: React.Dispatch<React.SetStateAction<CurrencyItem[]>>;
+    filterCurrencyCodes: string[];
 }

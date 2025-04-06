@@ -46,3 +46,19 @@ export const adjustedCodesTruncgil = ["USD / TRY", "EUR / TRY", "CHF / TRY", "GB
                                       "ATA YENİ 5'Lİ", "REŞAT ALTIN", "GREMESE",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];
 
 export const currencyCodes = ["TRY", "USD", "EUR", "CHF"];
+export const currencyFilterCodesApiluna = ["TRYTRY", "USDTRY", "EURTRY", "CHFTRY"];
+const currencyValue = [1, 0, 0, 0];
+
+export interface CurrencyItem {
+    code: string;
+    apiCode: string;
+    value: number;
+}
+
+export const currencyCodeStructure: CurrencyItem[] = currencyCodes.map(
+    (code, index) => ({
+        code,
+        apiCode: currencyFilterCodesApiluna[index],
+        value: currencyValue[index],
+    })
+);

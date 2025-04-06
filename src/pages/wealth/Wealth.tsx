@@ -2,17 +2,17 @@ import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes } from '../market/MarketStructure.ts';
-import { GetMiniMarketInfo } from '../../utility/JsonParser.tsx';
+import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes, CurrencyItem, 
+    currencyCodeStructure, currencyFilterCodesApiluna } from '../market/MarketStructure.ts';
+import { GetMiniMarketInfo, GetCurrencyInfo } from '../../utility/JsonParser.tsx';
 import { formatNumber } from '../../utility/FormatModifier.tsx';
-// import {  GetMiniMarketInfo } from "../../utility/JsonParser.tsx";
-// import { formatNumber } from "../../utility/FormatModifier.tsx";
 
 
 export const Wealth = () => {
     const [marketInfo, setMarketInfo] = useState<MarketInfoMinimal[]>([]); // why is this an array do I need it?
     const [wealthInfo, setWealthInfo] = useState<AssetInfo[]>([]);
-    const [currencyType, setCurrencyType] = useState('USDTRY');
+    const [currencyType, setCurrencyType] = useState('TRY');
+    const [currencyData, setCurrencyData] = useState<CurrencyItem[]>(currencyCodeStructure);
     const [quantity, setQuantity] = useState(1);
 
     const calculateItemTotal = (item: AssetInfo) => {
@@ -47,6 +47,7 @@ export const Wealth = () => {
     return (
         <div id="wealth-body">
             <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} />
+            <GetCurrencyInfo currencyInfo={currencyData} setCurrencyInfo={setCurrencyData} filterCurrencyCodes={currencyFilterCodesApiluna}/>
             {/* <ParseObjectMarketInfo marketInfo={marketArrayInfo} setMarketInfo={setMarketArrayInfo} filterCodes={filterCodesApiluna}/> */}
             <div id="wealth-header">
                 <a className="title">Varlık</a>
@@ -115,7 +116,7 @@ export const Wealth = () => {
                 </div>
                 <div className="text-right " id='total-field'>
                     <div className='field-input'>
-                        { formatNumber(wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0), 3) }
+                        { formatNumber(wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0) / GetCurrencyRatio(currencyType, currencyData), 3) }
                     </div>
                 </div>
             </div>
@@ -124,6 +125,11 @@ export const Wealth = () => {
 };
 
 export default Wealth;
+
+function GetCurrencyRatio(currencyType: string, currencyCodeStructure: CurrencyItem[]) {
+    const currencyRatio = currencyCodeStructure.find(currencyItem => currencyItem.code === currencyType)?.value;
+    return currencyRatio || NaN;
+}
 
 function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>) {
     const indices = wealthInfo.map(asset => asset.index);
