@@ -32,6 +32,8 @@ export const Wealth = () => {
         });
     };
 
+        attribute: keyof AssetInfo,
+        value: number | string
     return (
         <div id="wealth-body">
             <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} />
