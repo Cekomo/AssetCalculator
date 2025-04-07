@@ -14,6 +14,7 @@ export const Wealth = () => {
     const [currencyType, setCurrencyType] = useState('TRY');
     const [currencyData, setCurrencyData] = useState<CurrencyItem[]>(currencyCodeStructure);
     const [quantity, setQuantity] = useState(1);
+    const [availableAsset, setAvailableAsset] = useState<string[]>([]);
 
     const calculateItemTotal = (item: AssetInfo) => {
         const asset = marketInfo.find(marketAsset => (marketAsset.code === item.code))
@@ -68,6 +69,8 @@ export const Wealth = () => {
                                         updateAssetElement(index, 'code', code);
                                     }}
                                     filterCodes={filterCodesApiluna}
+                                    setAvailableAsset={setAvailableAsset}
+                                    availableAssets={availableAsset}
                                 />
                             </div>
                             <div className="field text-right">
@@ -86,7 +89,7 @@ export const Wealth = () => {
                                 <a className="text-right">
                                 { formatNumber(((wealthInfo.find(market => market.code === item.code)?.total ?? 0)), 3) }
                                 </a>
-                                <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => DeleteAssetRow(item.index, setWealthInfo)} /></button>
+                                <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => deleteAssetRow({index, setWealthInfo, setAvailableAsset})} /></button>
                             </div>
                         </div>
                     </li>
@@ -112,6 +115,7 @@ export const Wealth = () => {
                         selectedOption={currencyType}
                         filterCodes={currencyCodes}
                         isUpward={true}
+                        setAvailableAsset={setAvailableAsset}
                     />  
                 </div>
                 <div className="text-right " id='total-field'>
@@ -144,14 +148,23 @@ function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<Reac
     setWealthInfo(prevWealthInfo => [...prevWealthInfo, newAsset]);
 }
 
+const deleteAssetRow = ({
+    index,
+    setWealthInfo,
+    setAvailableAsset
+}: DeletionRowProps) => {
+    setWealthInfo(prev => prev.filter((_, i) => i !== index));
+    setAvailableAsset(prevAssets => 
+        prevAssets.filter((_, i) => i !== index));
+};
 
-function DeleteAssetRow(index: number, setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>) {
-    setWealthInfo(prevWealthInfo => 
-        prevWealthInfo.filter(item => item.index !== index)
-    );
+interface DeletionRowProps {
+    index: number;
+    setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>;
+    setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward }) => {
+const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward, setAvailableAsset, availableAssets }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -159,6 +172,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
     const toggleDropdown = () => setIsOpen(!isOpen);
 
     const handleSelect = (option: string) => {
+        setAvailableAsset(prevAssets => [...prevAssets, option]);
         onSelect(option);
         setIsOpen(false);
     };
@@ -183,10 +197,12 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
             </button>
             {isOpen && (
                 <div className={`dropdown-menu ${isUpward ? 'dropdown-upward' : 'dropdown-downward'}`}>
-                    {filterCodes.map((item) => (
-                        <div key={item}>
-                            <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
-                        </div>              
+                    {filterCodes
+                        .filter(item => !availableAssets?.includes(item))
+                        .map((item) => (
+                            <div key={item}>
+                                <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
+                            </div>              
                     ))}
                 </div>
             )}
@@ -199,6 +215,8 @@ interface DropdownProps {
     selectedOption?: string;
     filterCodes: string[];
     isUpward?: boolean;
+    setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>
+    availableAssets?: string[];
 }
 
 
