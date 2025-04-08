@@ -121,6 +121,31 @@
     transform: scale(0.92);
 }
 
+.export-icon {
+    color: rgb(204, 206, 200);
+    margin: 0;
+    padding: 0;
+    display: flex; 
+    background: none; 
+    border: none;
+    margin-left: 20px;
+}
+
+.export-icon svg {
+    font-size: 24px;
+    background-color: #2b2a2a;
+    border-radius: 6px;
+    padding: 8px; 
+}
+
+.export-icon svg:hover {
+    background-color: rgb(56, 55, 55);
+}
+
+.export-icon svg:active {
+    transform: scale(0.92);
+}
+
 #bottom-container {
     margin-top: auto;
     display: grid;

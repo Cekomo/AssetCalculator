@@ -1,7 +1,7 @@
 import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus, faCaretDown, faFileExport } from '@fortawesome/free-solid-svg-icons';
 import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes, CurrencyItem, 
     currencyCodeStructure, currencyFilterCodesApiluna } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo, GetCurrencyInfo } from '../../utility/JsonParser.tsx';
@@ -52,7 +52,7 @@ export const Wealth = () => {
             {/* <ParseObjectMarketInfo marketInfo={marketArrayInfo} setMarketInfo={setMarketArrayInfo} filterCodes={filterCodesApiluna}/> */}
             <div id="wealth-header">
                 <a className="title">Varlık</a>
-                <a className="title">Değer (₺)</a>
+                <a className="title">Değer</a>
                 <a className="title">Miktar</a>
                 <a className="title">Toplam</a>
             </div>
@@ -74,7 +74,7 @@ export const Wealth = () => {
                                 />
                             </div>
                             <div className="field text-right">
-                                { marketInfo.find(market => market.code === item.code)?.alis ?? null }
+                                { formatNumber(((marketInfo.find(market => market.code === item.code)?.alis ?? 0) / GetCurrencyRatio(currencyType, currencyData)), 3) }
                                 </div>
                             <a className="field text-center">
                                 <EditableNumber 
@@ -87,7 +87,7 @@ export const Wealth = () => {
                             </a>
                             <div className="field last-field">
                                 <a className="text-right">
-                                { formatNumber(((wealthInfo.find(market => market.code === item.code)?.total ?? 0)), 3) }
+                                { formatNumber(((wealthInfo.find(market => market.code === item.code)?.total ?? 0) / GetCurrencyRatio(currencyType, currencyData)), 3) }
                                 </a>
                                 <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => deleteAssetRow({index, setWealthInfo, setAvailableAsset})} /></button>
                             </div>
@@ -107,7 +107,9 @@ export const Wealth = () => {
                 </li>
             </div>
             <div id='bottom-container'>
-                <div></div>
+                <div>
+                    <button className="export-icon"><FontAwesomeIcon icon={ faFileExport } onClick={() => ExportFile()}/></button>
+                </div>
                 <div></div>
                 <div className="text-right" id='currency-dropdown'>
                     <Dropdown 
@@ -118,7 +120,7 @@ export const Wealth = () => {
                         setAvailableAsset={setAvailableAsset}
                     />  
                 </div>
-                <div className="text-right " id='total-field'>
+                <div className="text-right" id='total-field'>
                     <div className='field-input'>
                         { formatNumber(wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0) / GetCurrencyRatio(currencyType, currencyData), 3) }
                     </div>
@@ -258,3 +260,8 @@ const EditableNumber = ({ value, onChange}: {value: string | number; onChange: (
       </div>
     );
 };
+
+
+function ExportFile() {
+
+}
