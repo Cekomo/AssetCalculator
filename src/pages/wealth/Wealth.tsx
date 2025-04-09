@@ -1,11 +1,12 @@
 import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPlus, faCaretDown, faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes, CurrencyItem, 
     currencyCodeStructure, currencyFilterCodesApiluna } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo, GetCurrencyInfo } from '../../utility/JsonParser.tsx';
 import { formatNumber } from '../../utility/FormatModifier.tsx';
+import AssetReport from '../asset-report/AssetReport';
 
 
 export const Wealth = () => {
@@ -21,6 +22,11 @@ export const Wealth = () => {
         return (asset?.alis ?? 0) * item.quantity;
     };
 
+    const calculateItemValue = (item: AssetInfo) => {
+        const asset = marketInfo.find(marketAsset => (marketAsset.code === item.code));
+        return (asset?.alis ?? 0);
+    }
+
     const updateAssetElement = (
         index: number,
         attribute: keyof AssetInfo,
@@ -33,7 +39,11 @@ export const Wealth = () => {
                 ...item,
                 [attribute]: value,
             };
-        
+            
+            if (attribute === 'code') {
+                updatedItem.value = calculateItemValue(updatedItem);
+            }
+
             const shouldRecalculateTotal = (['quantity', 'value', 'code']).includes(attribute);
             return shouldRecalculateTotal
                 ? {
@@ -107,8 +117,13 @@ export const Wealth = () => {
                 </li>
             </div>
             <div id='bottom-container'>
-                <div>
-                    <button className="export-icon"><FontAwesomeIcon icon={ faFileExport } onClick={() => ExportFile()}/></button>
+                <div className="text-left">
+                    <AssetReport
+                        title="Monthly Asset Summary"
+                        date={new Date().toLocaleDateString()}
+                        assets={wealthInfo}
+                        overallTotal={wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0) / GetCurrencyRatio(currencyType, currencyData)}
+                    />
                 </div>
                 <div></div>
                 <div className="text-right" id='currency-dropdown'>
@@ -260,8 +275,3 @@ const EditableNumber = ({ value, onChange}: {value: string | number; onChange: (
       </div>
     );
 };
-
-
-function ExportFile() {
-
-}

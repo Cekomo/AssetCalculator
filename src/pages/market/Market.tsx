@@ -1,9 +1,8 @@
 import './Market.css';
 import { useState } from "react";
-import { ParseArrayMarketInfo, ParseObjectMarketInfo } from "../../utility/JsonParser.tsx";
+import { ParseArrayMarketInfo } from "../../utility/JsonParser.tsx";
 import { formatDate, formatNumber } from "../../utility/FormatModifier.tsx";
-import { MarketInfoApiluna, MarketInfoTruncgil, filterCodesApiluna, 
-        adjustedCodesApiluna, filterCodesTruncgil, adjustedCodesTruncgil} from './MarketStructure.ts';
+import { MarketInfoApiluna, filterCodesApiluna, adjustedCodesApiluna} from './MarketStructure.ts';
 
 
 export const Market = () => {
