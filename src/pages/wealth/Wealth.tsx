@@ -70,7 +70,6 @@ export const Wealth = () => {
                 {wealthInfo.map((item, index) => (
                     <li key={item.index}>
                         <div id="asset-row">
-                            {/* <div className="field text-center"><Dropdown onSelect={handleDropdownSelect}/></div> */}
                             <div className="field text-center">
                                 <Dropdown 
                                     key={index} 
