@@ -119,10 +119,11 @@ export const Wealth = () => {
             <div id='bottom-container'>
                 <div className="text-left">
                     <AssetReport
-                        title="Monthly Asset Summary"
+                        title="Asset Summary"
                         date={new Date().toLocaleDateString()}
                         assets={wealthInfo}
                         overallTotal={wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0) / GetCurrencyRatio(currencyType, currencyData)}
+                        currencyType={currencyType}
                     />
                 </div>
                 <div></div>
