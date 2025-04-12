@@ -1,12 +1,16 @@
 import './Wealth.css';
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, CurrencyItem, 
     currencyCodeStructure, currencyFilterCodesApiluna, codeMap, currencyCodeMap } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo, GetCurrencyInfo } from '../../utility/JsonParser.tsx';
-import { formatNumber } from '../../utility/FormatModifier.tsx';
+import { formatNumber } from '../../utility/FormatModifier.ts';
 import AssetReport from '../asset-report/AssetReport';
+import Dropdown from '../../component/Dropdown.tsx';
+import EditableNumber from '../../component/Field.tsx';
+import { AddAssetRow, deleteAssetRow } from '../../row-operation/RowOperation.tsx';
+import { updateAssetElement } from '../../utility/WealthUtils.ts';
 
 
 export const Wealth = () => {
@@ -14,52 +18,15 @@ export const Wealth = () => {
     const [wealthInfo, setWealthInfo] = useState<AssetInfo[]>([]);
     const [currencyType, setCurrencyType] = useState('TRY');
     const [currencyData, setCurrencyData] = useState<CurrencyItem[]>(currencyCodeStructure);
-    const [quantity, setQuantity] = useState(1);
+    const [quantity] = useState(1);
     const [availableAsset, setAvailableAsset] = useState<string[]>([]);
-
-    const calculateItemTotal = (item: AssetInfo) => {
-        const asset = marketInfo.find(marketAsset => (marketAsset.code === Object.keys(codeMap).find(k => codeMap[k] === item.code)))
-        return (asset?.alis ?? 0) * item.quantity;
-    };
-
-    const calculateItemValue = (item: AssetInfo) => {
-        const asset = marketInfo.find(marketAsset => (marketAsset.code === Object.keys(codeMap).find(k => codeMap[k] === item.code)));
-        return (asset?.alis ?? 0);
-    }
-
-    const updateAssetElement = (
-        index: number,
-        attribute: keyof AssetInfo,
-        value: number | string
-    ) => {
-        setWealthInfo(prev =>
-            prev.map((item, i) => {
-            if (i !== index) return item;
-            const updatedItem = {
-                ...item,
-                [attribute]: value,
-            };
-            
-            if (attribute === 'code') {
-                updatedItem.value = calculateItemValue(updatedItem);
-            }
-
-            const shouldRecalculateTotal = (['quantity', 'value', 'code']).includes(attribute);
-            return shouldRecalculateTotal
-                ? {
-                    ...updatedItem,
-                    total: calculateItemTotal(updatedItem),
-                }
-                : updatedItem;
-            })
-        );
-    };
+    
 
     return (
         <div id="wealth-body">
             <GetMiniMarketInfo marketInfoMinimal={marketInfo} setMarketInfo={setMarketInfo} filterCodes={filterCodesApiluna} />
             <GetCurrencyInfo currencyInfo={currencyData} setCurrencyInfo={setCurrencyData} filterCurrencyCodes={currencyFilterCodesApiluna}/>
-            {/* <ParseObjectMarketInfo marketInfo={marketArrayInfo} setMarketInfo={setMarketArrayInfo} filterCodes={filterCodesApiluna}/> */}
+
             <div id="wealth-header">
                 <a className="title">Varlık</a>
                 <a className="title">Değer</a>
@@ -75,7 +42,7 @@ export const Wealth = () => {
                                     key={index} 
                                     selectedOption={item.code || 'Varlık Seç'}
                                     onSelect={(code) => {
-                                        updateAssetElement(index, 'code', code);
+                                        updateAssetElement(index, 'code', code, setWealthInfo, marketInfo, codeMap);
                                     }}
                                     filterCodes={codeMap}
                                     setAvailableAsset={setAvailableAsset}
@@ -92,7 +59,7 @@ export const Wealth = () => {
                                     key={index}
                                     value={quantity} 
                                     onChange={(newValue) => {
-                                        updateAssetElement(index, 'quantity', newValue);
+                                        updateAssetElement(index, 'quantity', newValue, setWealthInfo, marketInfo, codeMap);
                                     }}
                                 />
                             </a>
@@ -119,6 +86,7 @@ export const Wealth = () => {
                     </div>
                 </li>
             </div>
+            
             <div id='bottom-container'>
                 <div className="text-left">
                     <AssetReport
@@ -155,127 +123,3 @@ function GetCurrencyRatio(currencyType: string, currencyCodeStructure: CurrencyI
     const currencyRatio = currencyCodeStructure.find(currencyItem => currencyItem.code === currencyType)?.value;
     return currencyRatio || NaN;
 }
-
-function AddAssetRow(wealthInfo: AssetInfo[], setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>) {
-    const indices = wealthInfo.map(asset => asset.index);
-    const newAsset: AssetInfo = {
-        index: wealthInfo.length > 0 ? Math.max(...indices) + 1 : 1,
-        code: '',
-        value: 0,
-        quantity: 1,
-        total: 0,
-    };
-
-    setWealthInfo(prevWealthInfo => [...prevWealthInfo, newAsset]);
-}
-
-const deleteAssetRow = ({
-    index,
-    setWealthInfo,
-    setAvailableAsset
-}: DeletionRowProps) => {
-    setWealthInfo(prev => prev.filter((_, i) => i !== index));
-    setAvailableAsset(prevAssets => 
-        prevAssets.filter((_, i) => i !== index));
-};
-
-interface DeletionRowProps {
-    index: number;
-    setWealthInfo: React.Dispatch<React.SetStateAction<AssetInfo[]>>;
-    setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
-const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward, setAvailableAsset, availableAssets }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
-
-
-    const toggleDropdown = () => setIsOpen(!isOpen);
-
-    const handleSelect = (key: string, value: string) => {
-        setAvailableAsset(prevAssets => [...prevAssets, key]);
-        onSelect(value);
-        setIsOpen(false);
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    return (
-        <div className="dropdown" ref={dropdownRef}>
-            <button onClick={toggleDropdown} className="dropdown-button">
-                <span className="dropdown-text">{selectedOption}</span>
-                <span className={`dropdown-icon ${isUpward ? 'caret-upward' : ''}`}>
-                    <FontAwesomeIcon icon={faCaretDown} />
-                </span>
-            </button>
-            {isOpen && (
-                <div className={`dropdown-menu ${isUpward ? 'dropdown-upward' : 'dropdown-downward'}`}>
-                    {Object.entries(filterCodes)
-                        .filter(([key]) => !availableAssets?.includes(key))
-                        .map(([key, value]) => (
-                            <div key={key}>
-                                <a className="dropdown-item" onClick={() => handleSelect(key, value)}>{value}</a>
-                            </div>              
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-};
-
-interface DropdownProps {
-    onSelect: (selectedValue: string) => void;
-    selectedOption?: string;
-    filterCodes: { [key: string]: string };
-    isUpward?: boolean;
-    setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>
-    availableAssets?: string[];
-}
-
-
-
-const EditableNumber = ({ value, onChange}: {value: string | number; onChange: (newValue: string) => void}) => {
-    const [number, setNumber] = useState(value);
-    const [isEditing, setIsEditing] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        setNumber(value);
-    }, [value]); 
-
-    const handleFocus = () => {
-      setIsEditing(true);
-      setTimeout(() => inputRef.current?.select(), 0);
-    };
-  
-    const handleBlur = () => setIsEditing(false);
-  
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        setNumber(newValue);
-        onChange(newValue);
-    };
-
-    return (
-      <div className="editable-container">
-        <input
-          ref={inputRef}
-          type="number"
-          value={number}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          className={`editable-input ${isEditing ? "active" : ""}`}
-          inputMode="numeric"
-        />
-      </div>
-    );
-};

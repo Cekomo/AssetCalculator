@@ -81,7 +81,8 @@ export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMini
                         .sort((a: MarketInfoMinimal, b: MarketInfoMinimal) => 
                             filterCodes.indexOf(a.code) - filterCodes.indexOf(b.code)
                     );                   
-                    setMarketInfo(filteredData);
+                    const tryItem = CreateTryJsonElement();
+                    setMarketInfo([...filteredData, tryItem]);
                 })
                 .catch(error => console.error("Error fetching market info:", error)); 
             }
@@ -136,6 +137,24 @@ export const GetCurrencyInfo: React.FC<CurrencyProps> = ({ currencyInfo, setCurr
         return <a></a>;
     }
 }
+
+function CreateTryJsonElement()  {
+    const currentDate = new Date();
+    const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-
+        ${String(currentDate.getMonth() + 1).padStart(2, '0')}-${currentDate.getFullYear()} 
+        ${String(currentDate.getHours()).padStart(2, '0')}:${String(currentDate.getMinutes()).padStart(2, '0')}:
+        ${String(currentDate.getSeconds()).padStart(2, '0')}`;
+
+    const newItem = {
+        code: "TRYTRY",
+        alis: "1",
+        satis: "1",
+        tarih: formattedDate,
+    };
+
+    return newItem;
+}
+
 
 interface MarketPropsApiluna {
     marketInfo: MarketInfoApiluna[];

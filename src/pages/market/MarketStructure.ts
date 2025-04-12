@@ -39,10 +39,10 @@ export const adjustedCodesApiluna = ["USD", "EUR", "CHF", "EUR / USD", "ALTIN", 
                                      "ATA YENİ 5'Lİ", "GREMESE YENİ",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];
 
 export const codeMap: Record<string, string> = 
-                        { USDTRY: "USD", EURTRY: "EUR", CHFTRY: "CHF", EURUSD: "EUR / USD", ALTIN: "ALTIN", 
-                          ONS: "ONS", KULCEALTIN: "KÜLÇE ALTIN", CEYREK_YENI: "ÇEYREK YENİ", YARIM_YENI: "YARIM YENİ",
-                          TEK_YENI: "TAM YENİ", ATA_YENI: "ATA YENİ", ATA5_YENI: "ATA YENİ 5'Lİ", 
-                          GREMESE_YENI: "GREMESE YENİ", AYAR22: "22 AYAR", AYAR14: "14 AYAR", GUMUSTRY: "GÜMÜŞ" };
+                        { TRYTRY: "Türk Lirasi", USDTRY: "Dolar", EURTRY: "Euro", CHFTRY: "Isveç Franki", ALTIN: "Gram Altin", KULCEALTIN: "Külçe Altin", 
+                          CEYREK_YENI: "Çeyrek Yeni", YARIM_YENI: "Yarim Yeni", TEK_YENI: "Tam Yeni", ATA_YENI: "Ata Yeni", 
+                          ATA5_YENI: "Ata Yeni 5'li", GREMESE_YENI: "Gremese Yeni", AYAR22: "22 Ayar", AYAR14: "14 Ayar", 
+                          GUMUSTRY: "Gümüş" };
 
 export const filterCodesTruncgil = ["USD", "EUR", "CHF", "GBP", "GRA",  "ONS", 
                                     "HAS", "CEY", "YAR", "TAM", "CUM", "BES",  

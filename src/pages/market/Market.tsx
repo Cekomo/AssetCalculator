@@ -1,7 +1,7 @@
 import './Market.css';
 import { useState } from "react";
 import { ParseArrayMarketInfo } from "../../utility/JsonParser.tsx";
-import { formatDate, formatNumber } from "../../utility/FormatModifier.tsx";
+import { formatDate, formatNumber } from "../../utility/FormatModifier.ts";
 import { MarketInfoApiluna, filterCodesApiluna, adjustedCodesApiluna} from './MarketStructure.ts';
 
 
