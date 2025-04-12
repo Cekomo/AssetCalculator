@@ -38,6 +38,12 @@ export const adjustedCodesApiluna = ["USD", "EUR", "CHF", "EUR / USD", "ALTIN", 
                                      "KÜLÇE ALTIN", "ÇEYREK YENİ", "YARIM YENİ", "TAM YENİ", "ATA YENİ",   
                                      "ATA YENİ 5'Lİ", "GREMESE YENİ",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];
 
+export const codeMap: Record<string, string> = 
+                        { USDTRY: "USD", EURTRY: "EUR", CHFTRY: "CHF", EURUSD: "EUR / USD", ALTIN: "ALTIN", 
+                          ONS: "ONS", KULCEALTIN: "KÜLÇE ALTIN", CEYREK_YENI: "ÇEYREK YENİ", YARIM_YENI: "YARIM YENİ",
+                          TEK_YENI: "TAM YENİ", ATA_YENI: "ATA YENİ", ATA5_YENI: "ATA YENİ 5'Lİ", 
+                          GREMESE_YENI: "GREMESE YENİ", AYAR22: "22 AYAR", AYAR14: "14 AYAR", GUMUSTRY: "GÜMÜŞ" };
+
 export const filterCodesTruncgil = ["USD", "EUR", "CHF", "GBP", "GRA",  "ONS", 
                                     "HAS", "CEY", "YAR", "TAM", "CUM", "BES",  
                                     "RES", "GRE",  "YIA", "ODA", "GUM"];
@@ -46,6 +52,7 @@ export const adjustedCodesTruncgil = ["USD / TRY", "EUR / TRY", "CHF / TRY", "GB
                                       "ATA YENİ 5'Lİ", "REŞAT ALTIN", "GREMESE",  "22 AYAR", "14 AYAR", "GÜMÜŞ"];
 
 export const currencyCodes = ["TRY", "USD", "EUR", "CHF"];
+export const currencyCodeMap = {TRY: "TRY", USD: "USD", EUR: "EUR", CHF: "CHF"};
 export const currencyFilterCodesApiluna = ["TRYTRY", "USDTRY", "EURTRY", "CHFTRY"];
 const currencyValue = [1, 0, 0, 0];
 

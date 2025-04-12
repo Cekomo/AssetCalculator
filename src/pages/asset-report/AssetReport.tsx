@@ -60,7 +60,7 @@ const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallT
         lineColor: 50,
       },
       headStyles: {
-        fillColor: [0, 128, 256],
+        fillColor: [198, 235, 183],
         textColor: 0,
         halign: 'center',
         fontStyle: 'bold',

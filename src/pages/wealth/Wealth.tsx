@@ -2,8 +2,8 @@ import './Wealth.css';
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPlus, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, currencyCodes, CurrencyItem, 
-    currencyCodeStructure, currencyFilterCodesApiluna } from '../market/MarketStructure.ts';
+import { filterCodesApiluna, MarketInfoMinimal, AssetInfo, CurrencyItem, 
+    currencyCodeStructure, currencyFilterCodesApiluna, codeMap, currencyCodeMap } from '../market/MarketStructure.ts';
 import { GetMiniMarketInfo, GetCurrencyInfo } from '../../utility/JsonParser.tsx';
 import { formatNumber } from '../../utility/FormatModifier.tsx';
 import AssetReport from '../asset-report/AssetReport';
@@ -18,12 +18,12 @@ export const Wealth = () => {
     const [availableAsset, setAvailableAsset] = useState<string[]>([]);
 
     const calculateItemTotal = (item: AssetInfo) => {
-        const asset = marketInfo.find(marketAsset => (marketAsset.code === item.code))
+        const asset = marketInfo.find(marketAsset => (marketAsset.code === Object.keys(codeMap).find(k => codeMap[k] === item.code)))
         return (asset?.alis ?? 0) * item.quantity;
     };
 
     const calculateItemValue = (item: AssetInfo) => {
-        const asset = marketInfo.find(marketAsset => (marketAsset.code === item.code));
+        const asset = marketInfo.find(marketAsset => (marketAsset.code === Object.keys(codeMap).find(k => codeMap[k] === item.code)));
         return (asset?.alis ?? 0);
     }
 
@@ -77,14 +77,16 @@ export const Wealth = () => {
                                     onSelect={(code) => {
                                         updateAssetElement(index, 'code', code);
                                     }}
-                                    filterCodes={filterCodesApiluna}
+                                    filterCodes={codeMap}
                                     setAvailableAsset={setAvailableAsset}
                                     availableAssets={availableAsset}
                                 />
                             </div>
                             <div className="field text-right">
-                                { formatNumber(((marketInfo.find(market => market.code === item.code)?.alis ?? 0) / GetCurrencyRatio(currencyType, currencyData)), 3) }
-                                </div>
+                                { formatNumber(((marketInfo.find(market => 
+                                    market.code === Object.keys(codeMap).find(k => codeMap[k] === item.code))?.alis ?? 0) 
+                                    / GetCurrencyRatio(currencyType, currencyData)), 3) }
+                             </div>
                             <a className="field text-center">
                                 <EditableNumber 
                                     key={index}
@@ -96,7 +98,9 @@ export const Wealth = () => {
                             </a>
                             <div className="field last-field">
                                 <a className="text-right">
-                                { formatNumber(((wealthInfo.find(market => market.code === item.code)?.total ?? 0) / GetCurrencyRatio(currencyType, currencyData)), 3) }
+                                { formatNumber(((wealthInfo.find(market => 
+                                    market.code === item.code)?.total ?? 0) 
+                                    / GetCurrencyRatio(currencyType, currencyData)), 3) }
                                 </a>
                                 <button className="text-right plus-icon"><FontAwesomeIcon icon={ faTrashCan } onClick={() => deleteAssetRow({index, setWealthInfo, setAvailableAsset})} /></button>
                             </div>
@@ -130,7 +134,7 @@ export const Wealth = () => {
                     <Dropdown 
                         onSelect={(currency) => setCurrencyType(currency)}
                         selectedOption={currencyType}
-                        filterCodes={currencyCodes}
+                        filterCodes={currencyCodeMap}
                         isUpward={true}
                         setAvailableAsset={setAvailableAsset}
                     />  
@@ -188,9 +192,9 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
-    const handleSelect = (option: string) => {
-        setAvailableAsset(prevAssets => [...prevAssets, option]);
-        onSelect(option);
+    const handleSelect = (key: string, value: string) => {
+        setAvailableAsset(prevAssets => [...prevAssets, key]);
+        onSelect(value);
         setIsOpen(false);
     };
 
@@ -214,11 +218,11 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
             </button>
             {isOpen && (
                 <div className={`dropdown-menu ${isUpward ? 'dropdown-upward' : 'dropdown-downward'}`}>
-                    {filterCodes
-                        .filter(item => !availableAssets?.includes(item))
-                        .map((item) => (
-                            <div key={item}>
-                                <a className="dropdown-item" onClick={() => handleSelect(item)}>{item}</a>
+                    {Object.entries(filterCodes)
+                        .filter(([key]) => !availableAssets?.includes(key))
+                        .map(([key, value]) => (
+                            <div key={key}>
+                                <a className="dropdown-item" onClick={() => handleSelect(key, value)}>{value}</a>
                             </div>              
                     ))}
                 </div>
@@ -230,7 +234,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
 interface DropdownProps {
     onSelect: (selectedValue: string) => void;
     selectedOption?: string;
-    filterCodes: string[];
+    filterCodes: { [key: string]: string };
     isUpward?: boolean;
     setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>
     availableAssets?: string[];
