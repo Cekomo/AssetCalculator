@@ -1,12 +1,10 @@
 import React from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { formatNumber } from '../../utility/FormatModifier';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { formatNumber } from '../../utility/FormatModifier';
 import './AssetReport.css';
-
-
 
 interface AssetInfo {
   index: number;
@@ -22,10 +20,11 @@ interface AssetReportProps {
   assets: AssetInfo[];
   overallTotal: number;
   currencyType: string;
+  currencyRatio: number;
 }
 
 
-const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallTotal, currencyType }) => {
+const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallTotal, currencyType, currencyRatio }) => {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -49,10 +48,10 @@ const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallT
       body: assets.map(asset => [
         asset.index,
         asset.code,
-        formatNumber(Number(asset.value), 3),
+        formatNumber(Number(asset.value) / currencyRatio, 3),
         asset.quantity,
-        formatNumber(Number(asset.total), 3),
-        currencyType,  // Ensure currencyType is correctly passed
+        formatNumber(Number(asset.total) / currencyRatio, 3),
+        currencyType,
       ]),
       styles: {
         halign: 'right',
@@ -85,7 +84,7 @@ const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallT
     doc.line(14, tableEndY + 5, pageWidth - 14, tableEndY + 5);
 
     const labelText = "Overall Total:";
-    const valueText = `${formatNumber(Number(overallTotal), 3)} ${currencyType}`;
+    const valueText = `${formatNumber(Number(overallTotal) / currencyRatio, 3)} ${currencyType}`;
 
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
@@ -101,8 +100,6 @@ const AssetReport: React.FC<AssetReportProps> = ({ title, date, assets, overallT
     const blobUrl = URL.createObjectURL(pdfBlob);
     window.open(blobUrl, '_blank');
   };
-
-  
 
   return (
     <div>

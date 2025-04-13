@@ -1,4 +1,4 @@
-import { AssetInfo, MarketInfoMinimal } from "../pages/market/MarketStructure";
+import { AssetInfo, MarketInfoMinimal, CurrencyItem } from "../pages/market/MarketStructure";
 
 
 
@@ -50,3 +50,8 @@ export const updateAssetElement = (
         })
     );
 };
+
+export function GetCurrencyRatio(currencyType: string, currencyCodeStructure: CurrencyItem[]) {
+    const currencyRatio = currencyCodeStructure.find(currencyItem => currencyItem.code === currencyType)?.value;
+    return currencyRatio || NaN;
+}

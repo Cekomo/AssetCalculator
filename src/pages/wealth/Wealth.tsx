@@ -10,7 +10,7 @@ import AssetReport from '../asset-report/AssetReport';
 import Dropdown from '../../component/Dropdown.tsx';
 import EditableNumber from '../../component/Field.tsx';
 import { AddAssetRow, deleteAssetRow } from '../../row-operation/RowOperation.tsx';
-import { updateAssetElement } from '../../utility/WealthUtils.ts';
+import { updateAssetElement, GetCurrencyRatio } from '../../utility/WealthUtils.ts';
 
 
 export const Wealth = () => {
@@ -93,8 +93,9 @@ export const Wealth = () => {
                         title="Asset Summary"
                         date={new Date().toLocaleDateString()}
                         assets={wealthInfo}
-                        overallTotal={wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0) / GetCurrencyRatio(currencyType, currencyData)}
+                        overallTotal={wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0)}
                         currencyType={currencyType}
+                        currencyRatio={GetCurrencyRatio(currencyType, currencyData)}
                     />
                 </div>
                 <div></div>
@@ -118,8 +119,3 @@ export const Wealth = () => {
 };
 
 export default Wealth;
-
-function GetCurrencyRatio(currencyType: string, currencyCodeStructure: CurrencyItem[]) {
-    const currencyRatio = currencyCodeStructure.find(currencyItem => currencyItem.code === currencyType)?.value;
-    return currencyRatio || NaN;
-}
