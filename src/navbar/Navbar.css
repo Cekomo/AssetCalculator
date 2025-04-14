@@ -3,7 +3,8 @@
 #nav-container {
   display: flex;
   align-items: center;
-  height: 96vh;
+  /* height: 96vh; */
+  /* height: 100%; */
   width: 90px; /* 104px initally*/
 }
 
@@ -11,7 +12,9 @@
   display: flex;
   background-color: rgb(28, 32, 32);
   margin-left: 12px;
-  height: 96vh;
+  /* height: 96vh; */
+  min-height: 850px;
+  height: 100%;
   width: 72px;
   justify-content: center;
 }
