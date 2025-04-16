@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { AssetInfo } from '../pages/market/MarketStructure';
 import './Dropdown.css'
 
 
@@ -10,10 +11,10 @@ interface DropdownProps {
     filterCodes: { [key: string]: string };
     isUpward?: boolean;
     setAvailableAsset: React.Dispatch<React.SetStateAction<string[]>>
-    availableAssets?: string[];
+    wealthInfo?: AssetInfo[];
 }
 
-const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward, setAvailableAsset, availableAssets }) => {
+const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCodes, isUpward, setAvailableAsset, wealthInfo }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -24,6 +25,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
         setAvailableAsset(prevAssets => [...prevAssets, key]);
         onSelect(value);
         setIsOpen(false);
+        console.log(wealthInfo);
     };
 
     useEffect(() => {
@@ -47,7 +49,7 @@ const Dropdown:React.FC<DropdownProps> = ({ onSelect, selectedOption, filterCode
             {isOpen && (
                 <div className={`dropdown-menu ${isUpward ? 'dropdown-upward' : 'dropdown-downward'}`}>
                     {Object.entries(filterCodes)
-                        .filter(([key]) => !availableAssets?.includes(key))
+                        .filter(([_, value]) => !wealthInfo?.some(asset => asset.code === value))
                         .map(([key, value]) => (
                             <div key={key}>
                                 <a className="dropdown-item" onClick={() => handleSelect(key, value)}>{value}</a>

@@ -19,7 +19,7 @@ export const Wealth = () => {
     const [currencyType, setCurrencyType] = useState('TRY');
     const [currencyData, setCurrencyData] = useState<CurrencyItem[]>(currencyCodeStructure);
     const [quantity] = useState(1);
-    const [availableAsset, setAvailableAsset] = useState<string[]>([]);
+    const [_, setAvailableAsset] = useState<string[]>([]);
     
 
     return (
@@ -46,7 +46,7 @@ export const Wealth = () => {
                                     }}
                                     filterCodes={codeMap}
                                     setAvailableAsset={setAvailableAsset}
-                                    availableAssets={availableAsset}
+                                    wealthInfo={wealthInfo}
                                 />
                             </div>
                             <div className="field text-right">
