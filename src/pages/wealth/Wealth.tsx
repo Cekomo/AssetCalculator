@@ -92,7 +92,7 @@ export const Wealth = () => {
                     <AssetReport
                         title="Asset Summary"
                         date={new Date().toLocaleDateString()}
-                        assets={wealthInfo}
+                        assets={wealthInfo.filter((asset)=> asset.code !== '')}
                         overallTotal={wealthInfo.reduce((sum, item) => sum + Number(item?.total || 0), 0)}
                         currencyType={currencyType}
                         currencyRatio={GetCurrencyRatio(currencyType, currencyData)}
