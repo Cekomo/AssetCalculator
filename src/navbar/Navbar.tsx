@@ -1,7 +1,7 @@
 import './Navbar.css';
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoins, faHouse, faMoneyBillTrendUp, faCloudBolt, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faCoins, faHouse, faMoneyBillTrendUp} from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
     return (
@@ -9,7 +9,7 @@ const Navbar = () => {
             <div id="navbar">
                 <div className='nav-elements'>
                     <li id='nav-icon'>
-                        <img src="../assets/cs.ico" alt="Icon" />
+                        <img src="./cs.ico" alt="Icon" />
                     </li>
                     <li className='nav-line'></li>
                     <li className='nav-item'> 
@@ -27,7 +27,7 @@ const Navbar = () => {
                             <FontAwesomeIcon icon={faMoneyBillTrendUp} />
                         </NavLink>
                     </li>
-                    <li className='nav-item'> 
+                    {/* <li className='nav-item'> 
                         <NavLink to="/weather">
                             <FontAwesomeIcon icon={faCloudBolt} />
                         </NavLink> 
@@ -36,7 +36,7 @@ const Navbar = () => {
                         <NavLink to="/about">
                             <FontAwesomeIcon icon={faUserTie} />
                         </NavLink>
-                    </li>
+                    </li> */}
                 </div>
             </div>
         </nav>
