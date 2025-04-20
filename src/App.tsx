@@ -10,7 +10,7 @@ import About from "./pages/About";
 
 function App() {
   return (
-    <BrowserRouter basename="/">
+    <BrowserRouter basename="/asset-calculator">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
