@@ -10,7 +10,7 @@ import About from "./pages/About";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
