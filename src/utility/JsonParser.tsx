@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { MarketInfoApiluna, MarketInfoTruncgil, MarketInfoMinimal, CurrencyItem } from '../pages/market/MarketStructure.ts';
 
+const api_url_apiluna = "https://kapalicarsi.apiluna.org";
+
 export const ParseArrayMarketInfo: React.FC<MarketPropsApiluna> = ({ marketInfo, setMarketInfo, filterCodes }) => {
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
                 // console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
-                axios.get('http://localhost:5000/market')
+                axios.get(api_url_apiluna)
                 .then(response => {
                     const filteredData = response.data
                         .filter((item: MarketInfoApiluna) => filterCodes.includes(item.code))
@@ -38,7 +40,7 @@ export const ParseObjectMarketInfo: React.FC<MarketPropsTruncgil> = ({ marketInf
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
-                axios.get('http://localhost:5000/market')
+                axios.get(api_url_apiluna)
                 .then(response => {
                     const metaData = response.data.Meta_Data ?? {};
                     const rawData = response.data.Rates;
@@ -74,7 +76,7 @@ export const GetMiniMarketInfo: React.FC<MarketPropsMinimal> = ({ marketInfoMini
         const fetchData = () => {
             if (document.visibilityState === "visible") {
                 // console.log(`Fetching market info at ${new Date().toLocaleTimeString()}`);
-                axios.get('http://localhost:5000/market')
+                axios.get(api_url_apiluna)
                 .then(response => {
                     const filteredData = response.data
                         .filter((item: MarketInfoMinimal) => filterCodes.includes(item.code))
@@ -107,7 +109,7 @@ export const GetCurrencyInfo: React.FC<CurrencyProps> = ({ currencyInfo, setCurr
     useEffect(() => {
         const fetchData = () => {
             if (document.visibilityState === "visible") {
-                axios.get('http://localhost:5000/market')
+                axios.get(api_url_apiluna)
                     .then(response => {
                         const updatedCurrencyInfo = (currencyInfo).map(currency => {
                             const apiItem = response.data.find(
